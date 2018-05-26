@@ -28,4 +28,5 @@ public class AlbumImageResponse {
     public AlbumModel album;
     public String url;
     public byte[] image;
+    public String localArtworkPath;
 }

@@ -51,12 +51,15 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
+import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     private static final String TAG = ArtworkManager.class.getSimpleName();
@@ -361,6 +364,21 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param album Album to fetch an image for.
      */
     public void fetchAlbumImage(final AlbumModel album, final Context context) {
+        final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(album.getAlbumKey(), context);
+
+        for (final String location : storageLocations) {
+            final File coverFile = new File(location + "/" + "cover.jpg");
+            if (coverFile.exists()) {
+                AlbumImageResponse response = new AlbumImageResponse();
+                response.album = album;
+                response.localArtworkPath = coverFile.getAbsolutePath();
+
+                new InsertAlbumImageTask(context).execute(response);
+
+                return;
+            }
+        }
+
         if (!isDownloadAllowed(context)) {
             return;
         }
@@ -378,19 +396,11 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * @param track Track to be used for image fetching
      */
     public void fetchAlbumImage(final TrackModel track, final Context context) {
-        if (!isDownloadAllowed(context)) {
-            return;
-        }
-
         // Create a dummy album
         AlbumModel album = new AlbumModel(track.getTrackAlbumName(), null, track.getTrackArtistName(),
                 track.getTrackAlbumKey(), MusicLibraryHelper.getAlbumIDFromKey(track.getTrackAlbumKey(), context));
 
-        if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_musicbrainz_key))) {
-            MusicBrainzManager.getInstance(context).fetchAlbumImage(album, context, response -> new InsertAlbumImageTask(context).execute(response), this);
-        } else if (mAlbumProvider.equals(context.getString(R.string.pref_artwork_provider_lastfm_key))) {
-            LastFMManager.getInstance(context).fetchAlbumImage(album, context, response -> new InsertAlbumImageTask(context).execute(response), this);
-        }
+        fetchAlbumImage(album, context);
     }
 
     /**
@@ -654,6 +664,13 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
 
             if (mCurrentBulkAlbum == response.album) {
                 fetchNextBulkAlbum(mContext);
+            }
+            if (response.localArtworkPath != null) {
+                mDBManager.insertAlbumImage(response.album, response.localArtworkPath);
+
+                broadcastNewAlbumImageInfo(response, mContext);
+
+                return response.album;
             }
             if (response.image == null) {
                 mDBManager.insertAlbumImage(mContext, response.album, null);

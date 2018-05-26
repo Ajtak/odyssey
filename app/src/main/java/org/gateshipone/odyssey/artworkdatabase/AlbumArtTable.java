@@ -38,6 +38,8 @@ public class AlbumArtTable {
 
     public static final String COLUMN_IMAGE_NOT_FOUND = "image_not_found";
 
+    public static final String COLUMN_IMAGE_HAS_FULL_PATH = "image_has_full_path";
+
     private static final String DATABASE_CREATE = "CREATE TABLE if not exists " +
             TABLE_NAME +
             " (" +
@@ -46,7 +48,8 @@ public class AlbumArtTable {
             COLUMN_ALBUM_MBID + " text," +
             COLUMN_ALBUM_ID + " text primary key," +
             COLUMN_IMAGE_NOT_FOUND + " integer," +
-            COLUMN_IMAGE_FILE_PATH + " text" +
+            COLUMN_IMAGE_FILE_PATH + " text," +
+            COLUMN_IMAGE_HAS_FULL_PATH + " integer" +
             ");";
 
     private static final String DATABASE_DROP = "DROP TABLE if exists " + TABLE_NAME;

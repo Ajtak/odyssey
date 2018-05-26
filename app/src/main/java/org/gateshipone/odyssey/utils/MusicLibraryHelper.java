@@ -35,11 +35,14 @@ import org.gateshipone.odyssey.models.FileModel;
 import org.gateshipone.odyssey.models.PlaylistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MusicLibraryHelper {
     private static final String TAG = "MusicLibraryHelper";
@@ -215,6 +218,39 @@ public class MusicLibraryHelper {
         }
 
         return albumTracks;
+    }
+
+    public static Set<String> getTrackStorageLocationsForAlbum(final String albumKey, final Context context) {
+        final Set<String> trackStorageLocations = new HashSet<>();
+
+        final String whereVal[] = {albumKey};
+
+        final String where = android.provider.MediaStore.Audio.Media.ALBUM_KEY + "=?";
+
+        final String orderBy = android.provider.MediaStore.Audio.Media.TRACK;
+
+        final Cursor cursor = PermissionHelper.query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projectionTracks, where, whereVal, orderBy);
+
+        if (cursor != null) {
+            // get all tracks on the current album
+            if (cursor.moveToFirst()) {
+                do {
+                    final String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+
+                    final File file = new File(url);
+                    if (file.exists()) {
+                        final String folderPath = file.getParent();
+                        if (folderPath != null) {
+                            trackStorageLocations.add(folderPath);
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+        }
+
+        return trackStorageLocations;
     }
 
     /**
