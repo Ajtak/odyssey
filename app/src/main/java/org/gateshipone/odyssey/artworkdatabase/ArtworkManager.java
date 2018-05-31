@@ -51,7 +51,6 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
-import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.json.JSONException;
 
