@@ -56,6 +56,9 @@ public class FileUtils {
 
     private static final String RAW_TYPE = "raw";
 
+    /**
+     * The list of supported artwork filenames. This will be used to check if a local cover exists.
+     */
     private static final String[] ALLOWED_ARTWORK_FILENAMES = new String[]{"cover.jpg", "cover.jpeg", "cover.png", "folder.jpg", "folder.jpeg", "folder.png", "artwork.jpg", "artwork.jpeg", "artwork.png"};
 
     /**
