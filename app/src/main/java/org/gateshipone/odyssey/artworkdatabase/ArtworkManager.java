@@ -51,6 +51,7 @@ import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
+import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
 import org.json.JSONException;
 
@@ -358,7 +359,8 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
     }
 
     /**
-     * Starts an asynchronous fetch for the image of the given album
+     * Starts an asynchronous fetch for the image of the given album.
+     * This method will check if a local artwork is available before calling the selected albumprovider.
      *
      * @param album Album to fetch an image for.
      */
@@ -366,8 +368,9 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(album.getAlbumKey(), context);
 
         for (final String location : storageLocations) {
-            final File coverFile = new File(location + "/" + "cover.jpg");
-            if (coverFile.exists()) {
+            final File coverFile = FileUtils.getArtworkFileInPath(location);
+
+            if (coverFile != null) {
                 AlbumImageResponse response = new AlbumImageResponse();
                 response.album = album;
                 response.localArtworkPath = coverFile.getAbsolutePath();
