@@ -86,7 +86,7 @@ public class ArtworkDatabaseManager extends SQLiteOpenHelper {
         }
 
         if (newVersion == 23) {
-            db.execSQL("ALTER TABLE " + AlbumArtTable.TABLE_NAME +  " ADD COLUMN " + AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH + " integer");
+            db.execSQL("ALTER TABLE " + AlbumArtTable.TABLE_NAME +  " ADD COLUMN " + AlbumArtTable.COLUMN_IMAGE_HAS_FULL_PATH + " integer default 0");
         }
     }
 
