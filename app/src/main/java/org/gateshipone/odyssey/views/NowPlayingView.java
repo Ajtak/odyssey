@@ -23,6 +23,7 @@
 package org.gateshipone.odyssey.views;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -62,6 +63,7 @@ import org.gateshipone.odyssey.artworkdatabase.ArtworkManager;
 import org.gateshipone.odyssey.dialogs.ChooseBookmarkDialog;
 import org.gateshipone.odyssey.dialogs.ChoosePlaylistDialog;
 import org.gateshipone.odyssey.dialogs.ErrorDialog;
+import org.gateshipone.odyssey.dialogs.TimeDurationDialog;
 import org.gateshipone.odyssey.models.AlbumModel;
 import org.gateshipone.odyssey.models.ArtistModel;
 import org.gateshipone.odyssey.models.TrackModel;
@@ -77,8 +79,8 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener, ArtworkManager.onNewArtistImageListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarChangeListener, PopupMenu.OnMenuItemClickListener, ArtworkManager.onNewAlbumImageListener,
+        ArtworkManager.onNewArtistImageListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final ViewDragHelper mDragHelper;
 
@@ -292,7 +294,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
     }
 
     /**
-     * Called if the user ends moving the seekbar. 
+     * Called if the user ends moving the seekbar.
      *
      * @param seekBar SeekBar that is used for dragging.
      */
@@ -421,6 +423,14 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
                 shareCurrentTrack();
                 return true;
             }
+            case R.id.view_nowplaying_action_start_sleep_timer: {
+                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                final long durationMS = sharedPref.getLong(getContext().getString(R.string.pref_last_used_sleep_timer_key), 0);
+
+                final TimeDurationDialog dialog = TimeDurationDialog.newInstance(durationMS);
+                dialog.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "TimeDurationDialog");
+                return true;
+            }
             default:
                 return false;
         }
@@ -512,7 +522,7 @@ public class NowPlayingView extends RelativeLayout implements SeekBar.OnSeekBarC
             mShowArtistImage = sharedPreferences.getBoolean(key, getContext().getResources().getBoolean(R.bool.pref_show_npv_artist_image_default));
 
             // Show artist image if artwork is requested
-            if ( mShowArtistImage && !mHideArtwork ) {
+            if (mShowArtistImage && !mHideArtwork) {
                 mCoverLoader.getArtistImage(mLastTrack, mCoverImage.getWidth(), mCoverImage.getHeight());
             } else {
                 // Hide artist image
