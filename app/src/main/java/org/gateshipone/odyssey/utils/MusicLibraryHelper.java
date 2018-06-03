@@ -220,6 +220,13 @@ public class MusicLibraryHelper {
         return albumTracks;
     }
 
+    /**
+     * Return a set of all storage locations of each track of an album.
+     *
+     * @param albumKey The key to identify the album in the mediastore
+     * @param context The application context to access the content resolver.
+     * @return The set of all storage locations for each track of this album.
+     */
     public static Set<String> getTrackStorageLocationsForAlbum(final String albumKey, final Context context) {
         final Set<String> trackStorageLocations = new HashSet<>();
 
