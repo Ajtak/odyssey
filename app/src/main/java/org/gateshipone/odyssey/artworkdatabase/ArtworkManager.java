@@ -53,11 +53,13 @@ import org.gateshipone.odyssey.models.TrackModel;
 import org.gateshipone.odyssey.utils.BitmapUtils;
 import org.gateshipone.odyssey.utils.FileUtils;
 import org.gateshipone.odyssey.utils.MusicLibraryHelper;
+import org.gateshipone.odyssey.utils.PermissionHelper;
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -138,6 +140,11 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
      * Settings value if artwork download is only allowed via wifi/wired connection.
      */
     private boolean mWifiOnly;
+
+    /**
+     * The list of supported artwork filenames. This will be used to check if a local cover exists.
+     */
+    private static final List<String> ALLOWED_ARTWORK_FILENAMES = new ArrayList<>(Arrays.asList("cover.jpg", "cover.jpeg", "cover.png", "folder.jpg", "folder.jpeg", "folder.png", "artwork.jpg", "artwork.jpeg", "artwork.png"));
 
     /*
      * Broadcast constants
@@ -368,9 +375,12 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
         final Set<String> storageLocations = MusicLibraryHelper.getTrackStorageLocationsForAlbum(album.getAlbumKey(), context);
 
         for (final String location : storageLocations) {
-            final File coverFile = FileUtils.getArtworkFileInPath(location);
+            final List<File> artworkFiles = PermissionHelper.getFilesForDirectory(context, location, (dir, name) -> ALLOWED_ARTWORK_FILENAMES.contains(name.toLowerCase()));
 
-            if (coverFile != null) {
+            if (!artworkFiles.isEmpty()) {
+                // use the first valid cover file
+                final File coverFile = artworkFiles.get(0);
+
                 AlbumImageResponse response = new AlbumImageResponse();
                 response.album = album;
                 response.localArtworkPath = coverFile.getAbsolutePath();
