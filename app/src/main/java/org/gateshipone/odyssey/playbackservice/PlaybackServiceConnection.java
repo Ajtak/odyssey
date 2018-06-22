@@ -28,6 +28,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
+
+import java.util.Stack;
 
 public class PlaybackServiceConnection implements ServiceConnection {
 
@@ -61,6 +64,9 @@ public class PlaybackServiceConnection implements ServiceConnection {
      */
     @Override
     public synchronized void onServiceConnected(ComponentName name, IBinder service) {
+        Log.v(TAG,"onServiceConnected: " + name);
+        new Exception().printStackTrace();
+
         mPlaybackService = IOdysseyPlaybackService.Stub.asInterface(service);
         if (mPlaybackService != null && mNotifier != null) {
             mNotifier.onConnect();
@@ -74,6 +80,8 @@ public class PlaybackServiceConnection implements ServiceConnection {
      */
     @Override
     public synchronized void onServiceDisconnected(ComponentName name) {
+        Log.v(TAG,"onServiceDisconnected: " + name);
+        new Exception().printStackTrace();
         mPlaybackService = null;
         if (mNotifier != null) {
             mNotifier.onDisconnect();
@@ -82,9 +90,29 @@ public class PlaybackServiceConnection implements ServiceConnection {
     }
 
     /**
+     * Called when the service connection was disconnected for some reason (crash?)
+     *
+     * @param name Name of the closed component
+     */
+    @Override
+    public synchronized void onBindingDied(ComponentName name) {
+        Log.v(TAG,"onBindingDied: " + name);
+        mPlaybackService = null;
+        if (mNotifier != null) {
+            mNotifier.onDisconnect();
+        }
+        //openConnection();
+    }
+
+
+
+    /**
      * This initiates the connection to the PlaybackService by binding to it
      */
     public void openConnection() {
+        Log.v(TAG,"openConnection: ");
+        new Exception().printStackTrace();
+
         Intent serviceStartIntent = new Intent(mContext, PlaybackService.class);
         mContext.bindService(serviceStartIntent, this, Context.BIND_AUTO_CREATE);
     }
@@ -93,10 +121,13 @@ public class PlaybackServiceConnection implements ServiceConnection {
      * Disconnects the connection by unbinding from the service (not needed anymore)
      */
     public void closeConnection() {
+        Log.v(TAG,"closeConnection: ");
+        new Exception().printStackTrace();
         mContext.unbindService(this);
     }
 
     public synchronized IOdysseyPlaybackService getPBS() throws RemoteException {
+        Log.v(TAG,"getPBS requested: " + mPlaybackService);
         if (mPlaybackService != null) {
             return mPlaybackService;
         } else {
