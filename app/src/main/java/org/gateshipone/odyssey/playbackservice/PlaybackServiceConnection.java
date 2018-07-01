@@ -120,10 +120,14 @@ public class PlaybackServiceConnection implements ServiceConnection {
     /**
      * Disconnects the connection by unbinding from the service (not needed anymore)
      */
-    public void closeConnection() {
+    public synchronized void closeConnection() {
         Log.v(TAG,"closeConnection: ");
         new Exception().printStackTrace();
         mContext.unbindService(this);
+        mPlaybackService = null;
+        if (mNotifier != null) {
+            mNotifier.onDisconnect();
+        }
     }
 
     public synchronized IOdysseyPlaybackService getPBS() throws RemoteException {
