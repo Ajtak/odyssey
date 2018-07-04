@@ -1,3 +1,6 @@
+### Version: X.X.XX Tag: release-XX (2019-XX-XX) ###
+* support for local album covers (supported formats: {cover|folder|artwork}.{jpg|jpeg|png}) ([Issue #99](https://github.com/gateship-one/odyssey/issues/99))
+
 ### Version: 1.1.17 Tag: release-29 (2019-02-07) ###
 * updated french translation
 * optional experimental smart random feature
