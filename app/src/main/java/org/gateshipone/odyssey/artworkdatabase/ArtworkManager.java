@@ -300,14 +300,15 @@ public class ArtworkManager implements ArtistFetchError, AlbumFetchError {
             }
         }
 
+        // FIXME disable android mediadatabase lookpup for now
         // Check local artwork database
-        String albumURL = album.getAlbumArtURL();
-        if (albumURL != null && !albumURL.isEmpty()) {
-            // Local album art found (android database)
-            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
-            BitmapCache.getInstance().putAlbumBitmap(album, bm);
-            return bm;
-        }
+//        String albumURL = album.getAlbumArtURL();
+//        if (albumURL != null && !albumURL.isEmpty()) {
+//            // Local album art found (android database)
+//            Bitmap bm = BitmapUtils.decodeSampledBitmapFromFile(albumURL, width, height);
+//            BitmapCache.getInstance().putAlbumBitmap(album, bm);
+//            return bm;
+//        }
 
         // Get the id for the album, used to check in database
         long albumID = album.getAlbumID();
