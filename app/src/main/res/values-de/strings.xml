@@ -215,4 +215,6 @@
     <string name="preference_smart_random_title">Intelligente Zufallswiedergabe</string>
     <string name="preference_smart_random_text">Diese Option aktiviert eine intelligentere Auswahl von zufälligen Liedern. Durch die Option werden die Interpreten der Wiedergabeliste gleichverteilt häufig für eine zufällige Wiedergabe ausgewählt. Dies ist nützlich für Wiedergabelisten, die viele Lieder einzelner Interpreten und wenige Lieder anderer Interpreten enthalten.</string>
     <string name="downloader_notification_initialize">Initialisiere Download</string>
+    <string name="preference_artwork_use_local_images_title">Nutze lokale Albenbilder</string>
+    <string name="preference_artwork_use_local_images_text">Ignoriere Albenbilder aus der Android Mediendatenbank und nutze stattdessen lokale Albenbilder. Wenn kein lokales Bild gefunden wird, wird der gewählte Albenbilderanbieter genutzt.</string>
 </resources>
