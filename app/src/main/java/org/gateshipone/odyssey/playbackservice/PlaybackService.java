@@ -2011,9 +2011,9 @@ public class PlaybackService extends Service implements AudioManager.OnAudioFocu
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                // We only need to duck our volume, so set it to 10%? and save that we ducked for resuming
+                // We only need to duck our volume, so set it to 0% and save that we ducked for resuming
                 if (mPlayer.isRunning()) {
-                    mPlayer.setVolume(0.1f, 0.1f);
+                    mPlayer.setVolume(0, 0);
                     mIsDucked = true;
                 }
                 break;
